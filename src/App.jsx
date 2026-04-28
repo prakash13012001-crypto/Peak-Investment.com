@@ -16,10 +16,13 @@ import {
 class ErrorBoundary extends Component{
   constructor(props){
     super(props);
-    this.state={hasError:false,error:null};
+    this.state={hasError:false};
   }
-  static getDerivedStateFromError(error){
-    return{hasError:true,error};
+  static getDerivedStateFromError(){
+    return{hasError:true};
+  }
+  componentDidCatch(error,info){
+    console.error("App error:",error,info);
   }
   render(){
     if(this.state.hasError){
@@ -27,7 +30,7 @@ class ErrorBoundary extends Component{
         <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-center items-center p-6">
           <h1 className="text-2xl font-black text-red-400 mb-4">Something went wrong</h1>
           <p className="text-slate-400 text-sm text-center max-w-sm">
-            {this.state.error?.message||"An unexpected error occurred. Please refresh the page."}
+            An unexpected error occurred. Please refresh the page.
           </p>
           <button
             onClick={()=>window.location.reload()}
