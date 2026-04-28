@@ -1,4 +1,4 @@
-import React,{useState,useMemo} from "react";
+import React,{useState,useMemo,Component} from "react";
 import {
   LayoutDashboard,Wallet,UserCircle,BarChart3,
   TrendingUp,TrendingDown,Plus,Trash2,
@@ -8,6 +8,42 @@ import {
   ResponsiveContainer,PieChart,Pie,Cell,
   LineChart,Line,XAxis,YAxis,Tooltip,CartesianGrid
 } from "recharts";
+
+/* ===============================
+   ERROR BOUNDARY
+================================= */
+
+class ErrorBoundary extends Component{
+  constructor(props){
+    super(props);
+    this.state={hasError:false};
+  }
+  static getDerivedStateFromError(){
+    return{hasError:true};
+  }
+  componentDidCatch(error,info){
+    console.error("App error:",error,info);
+  }
+  render(){
+    if(this.state.hasError){
+      return(
+        <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-center items-center p-6">
+          <h1 className="text-2xl font-black text-red-400 mb-4">Something went wrong</h1>
+          <p className="text-slate-400 text-sm text-center max-w-sm">
+            An unexpected error occurred. Please refresh the page.
+          </p>
+          <button
+            onClick={()=>window.location.reload()}
+            className="mt-6 px-6 py-3 bg-emerald-500 text-black font-bold rounded-2xl"
+          >
+            Refresh
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 /* ===============================
    PORTFOLIOPRO AI PREMIUM APP
@@ -555,46 +591,48 @@ export default function App(){
   }
 
   return(
-    <div className="bg-slate-950 min-h-screen">
-      {render()}
+    <ErrorBoundary>
+      <div className="bg-slate-950 min-h-screen">
+        {render()}
 
-      {page!=="landing"&&page!=="quiz"&&(
-        <nav className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 px-6 py-3 flex justify-between text-slate-400">
+        {page!=="landing"&&page!=="quiz"&&(
+          <nav className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 px-6 py-3 flex justify-between text-slate-400">
 
-          <button
-            onClick={()=>setPage("dashboard")}
-            className="flex flex-col items-center"
-          >
-            <LayoutDashboard size={20}/>
-            <span className="text-xs">Home</span>
-          </button>
+            <button
+              onClick={()=>setPage("dashboard")}
+              className="flex flex-col items-center"
+            >
+              <LayoutDashboard size={20}/>
+              <span className="text-xs">Home</span>
+            </button>
 
-          <button
-            onClick={()=>setPage("portfolio")}
-            className="flex flex-col items-center"
-          >
-            <Wallet size={20}/>
-            <span className="text-xs">Assets</span>
-          </button>
+            <button
+              onClick={()=>setPage("portfolio")}
+              className="flex flex-col items-center"
+            >
+              <Wallet size={20}/>
+              <span className="text-xs">Assets</span>
+            </button>
 
-          <button
-            onClick={()=>setPage("coach")}
-            className="flex flex-col items-center"
-          >
-            <BarChart3 size={20}/>
-            <span className="text-xs">Coach</span>
-          </button>
+            <button
+              onClick={()=>setPage("coach")}
+              className="flex flex-col items-center"
+            >
+              <BarChart3 size={20}/>
+              <span className="text-xs">Coach</span>
+            </button>
 
-          <button
-            onClick={()=>setPage("dashboard")}
-            className="flex flex-col items-center"
-          >
-            <UserCircle size={20}/>
-            <span className="text-xs">Profile</span>
-          </button>
+            <button
+              onClick={()=>setPage("dashboard")}
+              className="flex flex-col items-center"
+            >
+              <UserCircle size={20}/>
+              <span className="text-xs">Profile</span>
+            </button>
 
-        </nav>
-      )}
-    </div>
+          </nav>
+        )}
+      </div>
+    </ErrorBoundary>
   );
 }
